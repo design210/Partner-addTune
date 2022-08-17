@@ -1,0 +1,51 @@
+@import '@style/index';
+
+.title{
+  text-align: center;
+  @include font(2.4, 700, $gray900);
+}
+.menu{
+  & ul{
+    padding-left:15px;
+    & li{
+      @include font(1.6, 500, $gray500);
+      cursor:pointer;
+      padding:0 24px;
+      position:relative;
+      &.active{
+        @include font(1.6, 700, $gray900);
+      }
+      &:after{
+        content:'';
+        position:absolute;
+        right:0;
+        top:-4px;
+        height:26px;
+        border-left:1px solid #C4C4C4;
+      }
+      &:last-child{
+        &:after{
+          border:0;
+        }
+      }
+    }
+  }
+}
+.masonry{
+  & .newWrap{
+    cursor:pointer;
+    & img{
+      width:340px;
+    }
+    & p{
+      width:340px;
+      @include font(1.6, 400, $gray800);
+      line-height: 24px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+    }
+  }
+}

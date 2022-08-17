@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@modules/*": ["src/modules/*"],
+      "@types/*": ["src/types/*"],
+      "@skeletons/*": ["src/skeletons/*"],
+      "@components/*": ["src/components/*"],
+      "@style/*": ["src/style/*"],
+      "@api/*": ["src/api/*"],
+      "@public/*": ["public/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@utils/*": ["src/utils/*"],
+      "@pages/*": ["src/pages/*"]
+    }
+  }
+}

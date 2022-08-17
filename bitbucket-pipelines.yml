@@ -1,0 +1,114 @@
+#  Template React Deploy
+
+#  This template allows you to deploy your React app to an AWS S3 bucket and invalidate the old AWS Cloudfront distribution.
+#  The workflow allows running tests, code linting and security scans on feature branches (as well as master).
+#  The react app will be validated, deployed to S3 and trigger an AWS Cloudfront distribution invalidation to refresh the CDN caches after the code is merged to master.
+
+# Prerequisites: $AWS_ACCESS_KEY_ID, $AWS_SECRET_ACCESS_KEY setup in the Deployment variables.
+# For advanced cases, please, follow examples from the pipe's:
+# README https://bitbucket.org/atlassian/aws-s3-deploy/src/master/README.md
+# README https://bitbucket.org/atlassian/aws-cloudfront-invalidate/src/master/README.md
+
+# NOTE: 배포를 위한 yml
+
+image: node:16
+
+# Workflow Configuration
+
+pipelines:
+  branches:
+    develop:
+      - step:
+          name: dev build
+          caches:
+            - node
+          script:
+            - echo "start dev deploy ... "
+            - ls -al
+
+            - mkdir -p ~/.ssh
+            - touch ~/.ssh/known_hosts
+            - ssh-keyscan -H $DEV_SFTP_HOST >> ~/.ssh/known_hosts && chmod 600 ~/.ssh/known_hosts
+            - cat ~/.ssh/known_hosts
+
+            - apt-get update && apt-get install sshpass zip
+            - npm i --legacy-peer-deps
+            - npm run build:dev
+            - cd ./build
+            - ls -al ./
+            - zip -r addtunepartnerwebfrontdev *
+            - cd ..
+            - mv ./build/addtunepartnerwebfrontdev.zip ./addtunepartnerwebfrontdev.zip
+            - ls -al ./
+
+            - sshpass -p $DEV_SFTP_PASSWORD scp ./addtunepartnerwebfrontdev.zip $DEV_SFTP_USER@$DEV_SFTP_HOST:/home/partner/deployZip/
+            - sshpass -p $DEV_SFTP_PASSWORD ssh $DEV_SFTP_USER@$DEV_SFTP_HOST "sh /home/partner/deployDev.sh"
+      - step:
+          name: trigger swit build complete message
+          script:
+            - apt-get update && apt-get install -y unzip git
+            - CMSG=`git log --format=%B -n 1 $BITBUCKET_COMMIT`
+            - echo $CMSG
+            - curl -X POST
+              -H Content-Type:application/json
+              --data "{\"text\":\"[DEV] addtune partner web front pipeline deploy - $CMSG\"}" https://hook.swit.io/chat/211208071815354ZiDp/KqtdEm7PeNOK9QkSuiDZ
+    master:
+      - step:
+          name: prod build and deploy
+          caches:
+            - node
+          script:
+            - echo "start prod deploy ... "
+            - apt-get update && apt-get install zip
+            - apt-get install -y gconf-service libasound2 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils wget
+            - npm i --legacy-peer-deps
+            - npm run build
+            - cp ./appspec.yml ./build/appspec.yml
+            - cp -r ./bashScripts ./build/bashScripts
+            - ls -al ./build
+            - cd ./build
+            - zip -r addtunepartnerwebfrontdev *
+            - cd ..
+            - mv ./build/addtunepartnerwebfrontdev.zip ./addtunepartnerwebfrontdev.zip
+            - ls -al ./build
+            - ls -al ./
+          artifacts:
+            - addtunepartnerwebfrontdev.zip
+      - step:
+          name: upload to s3
+          script:
+            - pipe: atlassian/aws-code-deploy:1.1.1
+              variables:
+                AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+                AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+                AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+                COMMAND: 'upload'
+                APPLICATION_NAME: 'addtune_partner'
+                S3_BUCKET: 'tune.deploy.bucket'
+                ZIP_FILE: 'addtunepartnerwebfrontdev.zip'
+                VERSION_LABEL: 'addtunepartnerwebfrontdev.zip'
+      - step:
+          name: deploy to ec2
+          script:
+            - pipe: atlassian/aws-code-deploy:1.1.1
+              variables:
+                AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+                AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+                AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+                COMMAND: 'deploy'
+                APPLICATION_NAME: 'addtune_partner'
+                DEPLOYMENT_GROUP: 'addtune_partner_group'
+                S3_BUCKET: 'tune.deploy.bucket'
+                VERSION_LABEL: 'addtunepartnerwebfrontdev.zip'
+                IGNORE_APPLICATION_STOP_FAILURES: 'true'
+                WAIT: 'true'
+                FILE_EXISTS_BEHAVIOR: 'OVERWRITE'
+      - step:
+          name: trigger swit build complete message
+          script:
+            - apt-get update && apt-get install -y unzip git
+            - CMSG=`git log --format=%B -n 1 $BITBUCKET_COMMIT`
+            - echo $CMSG
+            - curl -X POST
+              -H Content-Type:application/json
+              --data "{\"text\":\"[PROD] addtune partner web front pipeline deploy - $CMSG\"}" https://hook.swit.io/chat/211208071815354ZiDp/KqtdEm7PeNOK9QkSuiDZ

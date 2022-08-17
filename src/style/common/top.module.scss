@@ -1,0 +1,146 @@
+@import '@style/index';
+header {
+  width: 1200px;
+  margin: 0 auto;
+  padding: 30px 0 23px 0;
+  position: relative;
+  z-index: 1;
+  background-color: #fff;
+  & .topWrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    & .language{
+      position:absolute;
+      right:0;
+      top:-15px;
+      @include font(1.2, 500, $gray500);
+      & span{
+        padding-left:10px;
+        cursor:pointer;
+      }
+    }
+    & .bi {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+    & .directLink {
+      display: flex;
+      & .textWrap {
+        padding: 4px 0 0 5px;
+        & .customer{
+          @include font(1.2, 500, $gray500);
+          background:url('../../../public/assets/img/phone.svg') no-repeat left 0 top 2px;
+          padding-left:13px;
+        }
+        & .tel{
+          @include font(1.4, 700, $gray600);
+        }
+      }
+    }
+    & .topFixMenu {
+      background:#fff;
+      border:0;
+      @include font(1.2, 400, $gray500);
+    }
+  }
+}
+.topNav {
+  border-bottom: 1px solid $gray100;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.05);
+  position: relative;
+  min-width:1200px;
+  & .depths1 {
+    display: flex;
+    justify-content: center;
+    padding: 14px 0 0;
+    & li {
+      margin: 0 70px;
+      & > a{
+        @include font(1.6, 700, $gray600);
+        margin-bottom:20px;
+      }
+      &.active {
+        & > a{
+          color: $primary600;
+        }
+      }
+      & .depths2{
+        display:none;
+        &.active{
+          display: block;
+          & .depths2Wrap{
+            height:47px;
+            background-color:#fff !important;
+            border-bottom: 1px solid $gray100;
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.05);
+          }
+        }
+        & .depths2Wrap{
+          position:absolute;
+          top:53px;
+          left:0;
+          width:100%;
+          border-top: 1px solid $gray100;
+          & .depths2list{
+            position:absolute;
+            width:1200px;
+            left:50%;
+            transform:translateX(-50%);
+            background-color: #fff;
+            & span{
+              display: inline-block;
+              height:45px;
+              margin-right:80px;
+              padding-top:13px;
+              & a{
+                @include font(1.4, 400, $gray500);
+              }
+              &.active{
+                position: relative;
+                &:after{
+                  content:'';
+                  height:3px;
+                  width:100%;
+                  background-color:$gray600;
+                  position:absolute;
+                  bottom:0;
+                  left:0;
+                  z-index:100;
+                }
+                & a{
+                  @include font(1.4, 700, $gray900);
+                }
+              }
+            }
+          }
+        }
+      }
+      &:hover{
+        & .depths2{
+          display:block;
+          & .depths2Wrap{
+            height:47px;
+            background-color:#fff !important;
+            border-bottom: 1px solid $gray100;
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.05);
+            z-index:10;
+          }
+        }
+      }
+      &:nth-child(1){
+        & .depths2list{
+          padding-left:400px;
+        }
+      }
+      &:nth-child(3){
+        & .depths2list{
+          padding-left:445px;
+        }
+      }
+    }
+  }
+}

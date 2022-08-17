@@ -1,0 +1,154 @@
+@import '@style/index';
+.modal {
+  display: none;
+  & .modalContainer {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    & .modalOverlay {
+      background-color: rgba(0, 0, 0, 0.2);
+      width: 100vw;
+      height: 100vh;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    & .modalContents {
+      width: 620px;
+      background-color: #fff;
+      z-index: 101;
+      border-radius: 10px;
+      padding: 40px;
+      position: relative;
+      & h1 {
+        @include font(2, 700, #000);
+      }
+      & button {
+        background-color: transparent;
+        position: absolute;
+        right: 40px;
+        top: 40px;
+        border: 0;
+      }
+    }
+  }
+  &.openModal {
+    display: block;
+    animation: fadeIn 0.3s linear alternate;
+    & .modalContainer {
+      & .modalContents {
+        animation: bounce 0.3s ease-in-out alternate;
+      }
+    }
+  }
+}
+.storeListWrap{
+  & .total{
+    @include font(1.4, 700, $gray600);
+    & span{
+      color:$gray400;
+    }
+    & .storeHeaderList{
+      flex-wrap: wrap;
+      & li{
+        @include font(1.2, 500, $gray600);
+        height:26px;
+        border-radius:13px;
+        border:1px solid $gray200;
+        line-height:24px;
+        padding:0 10px;
+        margin:0 5px 5px 0;
+      }
+    }
+  }
+  & .storeList{
+    max-height:452px;
+    overflow-y:auto;
+    & ul{
+      & li{
+        margin-bottom:15px;
+        border-bottom:1px solid $gray100;
+        padding-bottom:15px;
+        & .storeName{
+          @include font(1.2,700, $gray900);
+        }
+        & .content{
+          & p{
+            @include font(1.2,400, $gray900);
+            & span{
+              @include font(1.2,700, $gray500);
+            }
+          }
+        }
+        &:last-child{
+          margin-bottom:0;
+          border:0;
+        }
+      }
+    }
+  }
+  & .moreBtn{
+    text-align:center;
+    & button{
+      background-color:#fff;
+      border:0;
+      @include font(1.2,500, $second500);
+      & i{
+        vertical-align:2px;
+        margin-right:5px;
+      }
+    }
+  }
+}
+.pdfWrap{
+  height:700px;
+  overflow:auto;
+  border:1px solid $gray100;
+  position:relative;
+  & .pdfLoading{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+  }
+}
+.pdfUi{
+  display:flex;
+  justify-content: center;
+  position:relative;
+  margin-top:20px;
+  & .page{
+    padding:0 20px;
+    @include font(1.4,400, $gray500);
+  }
+  & .btn{
+    position:absolute;
+    right:0;
+    top:-5px;
+  }
+  & img{
+    cursor:pointer;
+  }
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes bounce {
+  0% {
+    top: 40px;
+  }
+  100% {
+    top: 0;
+  }
+}

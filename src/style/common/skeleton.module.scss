@@ -1,0 +1,11 @@
+@import '@style/index';
+.skeletonWrap{
+  width:1200px;
+  margin:0 auto;
+  & .dashboardLeft{
+    width:692px;
+  }
+  & .dashboardRight{
+    width:441px;
+  }
+}

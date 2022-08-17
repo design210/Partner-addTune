@@ -1,0 +1,13 @@
+{
+  "roots": ["<rootDir>/src/__test__/"],
+  "testEnvironment": "jsdom",
+  "moduleNameMapper": {
+    "\\.(css|less|svg|sass|scss|png|jpg|ttf|woff)$": "identity-obj-proxy",
+    "^@(.*)$": "<rootDir>/src/$1" // 로 시작하는 경로를 src/ 경로로 설정
+  },
+  "transformIgnorePatterns": ["<rootDir>/node_modules/"],
+  "setupFilesAfterEnv": ["<rootDir>/src/__test__/setup.ts"],
+  "transform": {
+    "^.+\\.(js|jsx|ts|tsx)$": "ts-jest"
+  }
+}

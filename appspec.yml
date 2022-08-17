@@ -1,0 +1,18 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination : /home/centos/deployZip
+    overwrite: yes
+
+permissions:
+  - object: /
+    patteren: "**"
+    owner: centos
+    group: centos
+
+hooks:
+  ApplicationStart:
+    - location: bashScripts/deploy.sh
+      timeout: 60
+      runas: centos
